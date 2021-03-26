@@ -113,14 +113,7 @@ namespace daemon_console
                 defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 HttpResponseMessage response = await HttpClient.PutAsync(webApiUrl, data);
-                if (response.IsSuccessStatusCode)
-                {
-                    string json = await response.Content.ReadAsStringAsync();
-                    JObject result = JsonConvert.DeserializeObject(json) as JObject;
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    processResult(result);
-                }
-                else
+                if (!response.IsSuccessStatusCode)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Failed to call the web API: {response.StatusCode}");

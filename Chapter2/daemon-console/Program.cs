@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Identity.Client;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -93,59 +94,112 @@ namespace daemon_console
                 // await apiCaller.CallWebApiAndProcessResultASync($"{config.ApiUrl}v1.0/teams", result.AccessToken, Display);
                 //await apiCaller.CallWebApiAndProcessResultASync($"https://graph.microsoft.com/beta/teams", result.AccessToken, Display);
 
-               
+
                 //Create Team with migration mode set - Copy the teamId from Response Header
-               var postcontent = "{" +
-                    "\"@microsoft.graph.teamCreationMode\": \"migration\"," +
-                    "\"template@odata.bind\": \"https://graph.microsoft.com/beta/teamsTemplates('standard')\", " +
-                     "\"displayName\": \"MigrationTeam3\"," +
-                      "\"description\": \"Migrate data into teams\"," +
-                      "\"createdDateTime\": \"2021-03-14T11:22:17.043Z\"" +
-                    "}";
-                var data = new StringContent(postcontent, Encoding.UTF8, "application/json");
+                CreateTeam newTeam = new CreateTeam
+                {
+                    teamCreationMode = "migration",
+                    bind = "https://graph.microsoft.com/beta/teamsTemplates('standard')",
+                    displayName = "MigrationTeam TestXYZ",
+                    description = "Migrate data into teams",
+                    createdDateTime = "2021-03-14T11:22:17.043Z"
+                };
+              
+                var data = new StringContent(JsonConvert.SerializeObject(newTeam), Encoding.UTF8, "application/json");
                 var response = await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams", result.AccessToken, Display, data);
+                var location = response.Headers.Location?.ToString();
+                var teamId = ((location.Split('/')[1]).Remove(0, 7)).Remove(36, 2);
+                var channelId = "";
 
-                //Create channel for team - 6bb7e338-8f61-42ed-be68-7c3f0283b594
-                postcontent = "{" +
-                   "\"@microsoft.graph.channelCreationMode\": \"migration\"," +
-                    "\"displayName\": \"Migration Channel2\"," +
-                     "\"description\": \"Migrate data into teams - Channel1\"," +
-                     "\"membershipType\": \"standard\"," +
-                     "\"createdDateTime\": \"2021-03-14T11:22:17.043Z\"" +
-                   "}";
-                data = new StringContent(postcontent, Encoding.UTF8, "application/json");
-                //await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/7027e9c9-274d-41c6-81ab-c97a2150f8af/channels", result.AccessToken, Display, data);
+                CreateChannelRequest newChannel = new CreateChannelRequest
+                {
+                    channelCreationMode = "migration",
+                    displayName = "Migration Channel TestXYZ",
+                    description = "New channel",
+                    membershipType = "standard",
+                    createdDateTime = "2021-03-14T11:22:17.043Z"
+                };
+                data = new StringContent(JsonConvert.SerializeObject(newChannel), Encoding.UTF8, "application/json");
+                response = await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/{teamId}/channels", result.AccessToken, Display, data);
 
-                //19:7d4f172315a94e1f9d0a67f4baf3bdc3@thread.tacv2
-                //19:3d66b23dbf0245a8a53e550b858f3595@thread.tacv2
-                //Post Message
-                postcontent = "{" +
-                     "\"createdDateTime\": \"2021-03-12T11:22:17.043Z\"," +
-                     "\"from\" : {" +
-                     "\"user\": {" +
-                     "\"id\": \"39c07c8d-ff89-4ef6-9855-2ec466148fe2\"," +
-                     "\"displayName\": \"ua0001@sunds17.vtdeploy.com\"," +
-                     "\"userIdentityType\": \"aadUser\"" +
-                     "}" +
-                     "}," +
-                     "\"body\" : {" +
-                     "\"contentType\": \"html\"," +
-                     "\"content\": \"First Migrated Message\"" +
-                     "}" +
-                   "}";
-                data = new StringContent(postcontent, Encoding.UTF8, "application/json");
-                //await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/7027e9c9-274d-41c6-81ab-c97a2150f8af/channels/19:3d66b23dbf0245a8a53e550b858f3595@thread.tacv2/messages", result.AccessToken, Display, data);
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    channelId = JObject.Parse(json)["id"].ToString();
+                    Console.WriteLine("ChannelId - " + channelId);
+                }
+                else
+                {
+                    throw new Exception("Channel creation failed");
+                }
+                if(channelId == "")
+                {
+                    throw new Exception("Channel creation failed");
+                }
+
+                ChatMessageRequest newMessage = new ChatMessageRequest
+                {
+                    createdDateTime =  "2021-03-12T11:22:17.043Z",
+                    from = new From
+                    {
+                        user = new User
+                        {
+                            id = "39c07c8d-ff89-4ef6-9855-2ec466148fe2",
+                            displayName = "ua0001@sunds17.vtdeploy.com",
+                            userIdentityType = "aadUser"
+                        }
+                    },
+                    body = new ItemBody
+                    {
+                        content = "Automated migrated msg",
+                        contentType = "html"
+                    }
+                };
+                var str = JsonConvert.SerializeObject(newMessage);
+                data = new StringContent(JsonConvert.SerializeObject(newMessage), Encoding.UTF8, "application/json");
+                response = await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/{teamId}/channels/{channelId}/messages", result.AccessToken, Display, data);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Posted msg");
+                }
+                else
+                {
+                    throw new Exception("Posting msg failed");
+                }
+                    
                 
-                //await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/7027e9c9-274d-41c6-81ab-c97a2150f8af/completeMigration", result.AccessToken, Display, null);
+                response = await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/{teamId}/channels/{channelId}/completeMigration", result.AccessToken, Display, null);
 
-                postcontent = "{" +
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Completed migration for channel");
+                }
+                else
+                {
+                    throw new Exception("Completing migration for channel failed");
+                }
+
+                //Need to get the 'General' channel Id and complete migration  TODO
+
+
+                response = await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/{teamId}/completeMigration", result.AccessToken, Display, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Completed migration for team");
+                }
+                else
+                {
+                    throw new Exception("Completing migration for team failed");
+                }
+
+                var postcontent = "{" +
                    "\"@odata.type\": \"#microsoft.graph.aadUserConversationMember\"," +
                     "\"roles\": [\"member\"]," +
                      "\"user@odata.bind\": \"https://graph.microsoft.com/beta/users/39c07c8d-ff89-4ef6-9855-2ec466148fe2\"" +
                    "}";
                 data = new StringContent(postcontent, Encoding.UTF8, "application/json");
                 await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/7027e9c9-274d-41c6-81ab-c97a2150f8af/members", result.AccessToken, Display, data);
-
             }
         }
 
