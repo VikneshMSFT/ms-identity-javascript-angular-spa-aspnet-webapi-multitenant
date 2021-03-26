@@ -103,12 +103,12 @@ public class CreateChannelResponse
 public class AddMemberToTeam
 {
     [JsonProperty(PropertyName = "@odata.type")]
-    string type;
+    public string type { get; set; }
 
     [JsonProperty(PropertyName = "roles")]
-    string[] roles;
+    public string[] roles { get; set; }
 
     [JsonProperty(PropertyName = "user@odata.bind")]
-    string bind;
+    public string bind { get; set; }
 
 }

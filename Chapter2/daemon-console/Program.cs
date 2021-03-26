@@ -91,7 +91,7 @@ namespace daemon_console
             {
                 var httpClient = new HttpClient();
                 var apiCaller = new ProtectedApiCallHelper(httpClient);
-                // await apiCaller.CallWebApiAndProcessResultASync($"{config.ApiUrl}v1.0/teams", result.AccessToken, Display);
+                 //await apiCaller.CallWebApiAndProcessResultASync($"https://teamsgraph.teams.microsoft.com/beta/teams('250dfa22-2334-4d15-a7c0-7d3bb9303e36')/channels", result.AccessToken, Display);
                 //await apiCaller.CallWebApiAndProcessResultASync($"https://graph.microsoft.com/beta/teams", result.AccessToken, Display);
 
 
@@ -193,13 +193,15 @@ namespace daemon_console
                     throw new Exception("Completing migration for team failed");
                 }
 
-                var postcontent = "{" +
-                   "\"@odata.type\": \"#microsoft.graph.aadUserConversationMember\"," +
-                    "\"roles\": [\"member\"]," +
-                     "\"user@odata.bind\": \"https://graph.microsoft.com/beta/users/39c07c8d-ff89-4ef6-9855-2ec466148fe2\"" +
-                   "}";
-                data = new StringContent(postcontent, Encoding.UTF8, "application/json");
-                await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/7027e9c9-274d-41c6-81ab-c97a2150f8af/members", result.AccessToken, Display, data);
+                //Add owner
+                AddMemberToTeam member = new AddMemberToTeam
+                {
+                    type = "#microsoft.graph.aadUserConversationMember",
+                    roles = new string[] {"owner"},
+                    bind = "https://graph.microsoft.com/beta/users/39c07c8d-ff89-4ef6-9855-2ec466148fe2"
+                };
+                data = new StringContent(JsonConvert.SerializeObject(member), Encoding.UTF8, "application/json");
+                await apiCaller.CallWebApiPostAndProcessResultASync($"https://graph.microsoft.com/beta/teams/{teamId}/members", result.AccessToken, Display, data);
             }
         }
 
