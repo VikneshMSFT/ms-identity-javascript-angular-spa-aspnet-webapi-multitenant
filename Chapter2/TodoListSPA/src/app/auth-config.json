@@ -3,9 +3,9 @@
     "clientId": "fc9c3f24-62b3-4c2c-8eca-39bd17ab5b05",
     "tenantId": "organizations"
   },
-  "configuration": {
-    "redirectUri": "https://localhost:4200",
-    "postLogoutRedirectUri": "http://localhost:4200"
+  "configuration": {   
+    "redirectUri": "https://fhl2021zoom2teams.z13.web.core.windows.net",
+    "postLogoutRedirectUri": "https://fhl2021zoom2teams.z13.web.core.windows.net"
   },
   "resources": {
     "graphApi": {
@@ -13,15 +13,15 @@
       "resourceScopes": [ "User.Read.All" ]
     },
     "todoListApi": {
-      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/todolist",
+      "resourceUri": "https://zoom2teamssync.eastus.cloudapp.azure.com/api/todolist",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     },
     "getConfigApi": {
-      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/configurations",
+      "resourceUri": "https://zoom2teamssync.eastus.cloudapp.azure.com/api/configurations",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     },
     "authApi": {
-      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/auth",
+      "resourceUri": "https://zoom2teamssync.eastus.cloudapp.azure.com/api/auth",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     }
   }     

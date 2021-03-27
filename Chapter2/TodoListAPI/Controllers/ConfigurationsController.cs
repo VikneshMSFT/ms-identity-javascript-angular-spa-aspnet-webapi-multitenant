@@ -32,6 +32,8 @@ namespace TodoListAPI.Controllers
             var currentUserUPN = HttpContext.User.Identity.Name;
             var user = await _repository.GetUser(currentUserUPN);           
             var config =  new AppConfiguration();
+            config.AADAppId = _config["AppClientId"];
+            config.ZoomAppId = _config["ZoomClientId"];
             if (user != null)
             {
                 config.ZoomLoggedIn = user.ZoomAccessToken != null;

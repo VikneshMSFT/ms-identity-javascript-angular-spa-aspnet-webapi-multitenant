@@ -2,13 +2,19 @@ import { Todo } from './todo';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as auth from './auth-config.json';
+import { environment } from "src/environments/environment";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoService {
-  apiUri = auth.resources.todoListApi.resourceUri;
+  //apiUri = auth.resources.todoListApi.resourceUri;
+
+  apiUri = environment.todoListApiResourceUri;
+
   graphUri = auth.resources.graphApi.resourceUri;
+
 
   constructor(private http: HttpClient) { }
 

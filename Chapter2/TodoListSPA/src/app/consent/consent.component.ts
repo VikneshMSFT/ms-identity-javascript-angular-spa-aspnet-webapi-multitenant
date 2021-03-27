@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
+import { environment } from 'src/environments/environment';
 import * as auth from '../auth-config.json';
 
 @Component({
@@ -24,8 +25,8 @@ export class ConsentComponent {
            */
           const adminConsentUri = "https://login.microsoftonline.com/" + 
           `${account.tenantId}` + "/v2.0/adminconsent?client_id=" + 
-          `${auth.credentials.clientId}` + "&state=" + `${state}` + "&redirect_uri=" + `${auth.configuration.redirectUri}` +
-          "&scope=" + `${auth.resources.todoListApi.resourceScopes.join(' ')}`;
+          `${environment.uiClientId}` + "&state=" + `${state}` + "&redirect_uri=" + `${environment.redirectUri}` +
+          "&scope=" + `${environment.todoListResourceScope.join(' ')}`;
     
         // redirecting...
         window.location.replace(adminConsentUri);

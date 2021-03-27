@@ -5,7 +5,13 @@
 export const environment = {
   production: false,
   envName : 'dev',
-  redirectUri: 'https://localhost:4200/auth'
+  mainRedirectUri: 'https://localhost:4200',
+  redirectUri: 'https://localhost:4200/auth',
+  todoListApiResourceUri: 'https://localhost:44351/api/todolist',
+  getConfigApiResourceUri: 'https://localhost:44351/api/configurations',
+  authApiResourceUri: 'https://localhost:44351/api/auth',
+  todoListResourceScope: ['api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default'],
+  uiClientId: 'fc9c3f24-62b3-4c2c-8eca-39bd17ab5b05'  
 };
 
 /*

@@ -32,6 +32,7 @@ import { MigrationViewComponent } from './migration-view/migration-view.componen
 import { ConfigurationsService } from './configurations.service';
 import { AuthComponent } from './auth/auth.component';
 import { AuthService } from './auth.servive';
+import { environment } from 'src/environments/environment';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -42,9 +43,9 @@ const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigato
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: auth.credentials.clientId,
+      clientId: environment.uiClientId,
       authority: 'https://login.microsoftonline.com/' + auth.credentials.tenantId,
-      redirectUri: auth.configuration.redirectUri
+      redirectUri: environment.mainRedirectUri
     },
     cache: {
       cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -61,9 +62,9 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
   protectedResourceMap.set(auth.resources.graphApi.resourceUri, auth.resources.graphApi.resourceScopes)
-    .set(auth.resources.todoListApi.resourceUri, auth.resources.todoListApi.resourceScopes)
-    .set(auth.resources.getConfigApi.resourceUri, auth.resources.getConfigApi.resourceScopes)
-    .set(auth.resources.authApi.resourceUri, auth.resources.authApi.resourceScopes);
+    .set(environment.todoListApiResourceUri, environment.todoListResourceScope)
+    .set(environment.getConfigApiResourceUri, environment.todoListResourceScope)
+    .set(environment.authApiResourceUri, environment.todoListResourceScope);
 
   return {
     interactionType: InteractionType.Redirect,
@@ -85,7 +86,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
      */
 
     authRequest: {
-      scopes: [...auth.resources.todoListApi.resourceScopes],
+      scopes: [...environment.todoListResourceScope],
     },
   };
 }
