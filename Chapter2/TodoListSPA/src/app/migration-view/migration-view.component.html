@@ -1,11 +1,27 @@
-<label>Sign in into Zoom and grant consent/access : </label> 
-<button mat-raised-button (click)="onSignInToZoomsClickEvent()">Sign in and grant access to Zoom</button>
+<div *ngIf="zoomLoggedIn == 'false'">
+  <label>Sign in into Zoom and grant consent/access : </label> 
+  <button  mat-raised-button (click)="onSignInToZoomsClickEvent()">Sign in and grant access to Zoom</button>
+</div>
+<div *ngIf="zoomLoggedIn == 'true'">
+  <span style="color:green;font-size:25px;">Consent recieved for Zoom and your data are being exported into Teams</span>
+  <br>
+</div>
+
 <br>
 <br>
-<label>Sign in into Microsoft 365 and grant consent/access to Microsoft Teams: </label> 
-<button mat-raised-button (click)="onSignInToTeamsClickEvent()">Sign in and grant access Teams</button>
+
+<div *ngIf="teamsLoggedIn == 'false'">
+  <label>Sign in into Microsoft 365 and grant consent/access to Microsoft Teams: </label> 
+  <button mat-raised-button (click)="onSignInToTeamsClickEvent()">Sign in and grant access to Microsoft Teams</button>
+</div>
+<div *ngIf="teamsLoggedIn == 'true'">
+  <span style="color:green;font-size:25px;" >Consent recieved for Teams and your data are being exported into Teams</span>
+  <br>
+</div>
+
 <br>
 <br>
+
 <label for="Calendar">Choose your calendar for scheduling your meetings : </label>
 <select name="Calendar" id="Calendar" [(ngModel)]="calendar">
   <option value="google">Google Calendar</option>

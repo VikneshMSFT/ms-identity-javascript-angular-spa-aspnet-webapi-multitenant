@@ -20,11 +20,9 @@ namespace TodoListAPI.Services
         {
             _httpClient = httpClient;
             _config = config;
-            _httpClient.BaseAddress = new Uri(_config["ZoomBaseUrl"]);
             _httpClient.DefaultRequestHeaders
                 .Accept
-                .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            
+                .Add(new MediaTypeWithQualityHeaderValue("application/json"));           
         }
        
         public async Task<Token> GetAccessTokenForAuthCode(string authCode)

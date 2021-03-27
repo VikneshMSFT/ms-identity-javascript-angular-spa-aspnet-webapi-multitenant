@@ -36,6 +36,26 @@ import { AuthCode } from "../models/authcode";
                         this.router.navigate(['../migration-view'], { relativeTo: this.route });
                     }
                 );            
+            }
+            if(sessionStorage.getItem('current_login_attempt') === 'graph')
+            {
+                console.log("current_login_attempt is set to graph");
+                sessionStorage.removeItem('current_login_attempt');
+                var code = new AuthCode();
+                code.app = "graph";
+                code.code = authCode;
+                this.authService.postAuthCode(code).subscribe(
+                    (response) => {
+                        console.log("success response " );
+                        console.log(response);
+                        this.router.navigate(['../migration-view'], { relativeTo: this.route });
+                    },
+                    (error) => {
+                        console.log("error when fetching accesstoken for zoom auth code");
+                        console.log(error)
+                        this.router.navigate(['../migration-view'], { relativeTo: this.route });
+                    }
+                );            
             }           
         });
     }

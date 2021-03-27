@@ -11,6 +11,10 @@ namespace TodoListAPI.Models
 
         public string AADAppId { get; set; }
 
+        public bool ZoomLoggedIn { get; set; }
+
+        public bool TeamsLoggedIn { get; set; }
+
         public AppConfiguration()
         {
             // default App Id

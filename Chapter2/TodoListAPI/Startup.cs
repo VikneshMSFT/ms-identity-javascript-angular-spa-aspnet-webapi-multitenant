@@ -13,6 +13,9 @@ using Microsoft.Identity.Web;
 using TodoListAPI.Models;
 using TodoListAPI.Services;
 using TodoListAPI.Repository;
+using TodoListAPI.BackGroundWorker;
+using TodoListAPI.BackGroundWorker.MessageHandler;
+using TodoListAPI.BackGroundWorker.Message;
 
 namespace TodoListAPI
 {
@@ -51,7 +54,7 @@ namespace TodoListAPI
             services.AddAuthorization();
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
-
+            services.AddSingleton<INotifier>(new Notifier());
             services.AddControllers();
             
             // Allowing CORS for all domains and methods for the purpose of sample
@@ -60,11 +63,31 @@ namespace TodoListAPI
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
-            }));
-
+            }));            
             services.AddHttpClient<IZoomAuthService, ZoomAuthService>();
-            
+            services.AddHttpClient<IAADAuthService, AADAuthService>();
             services.AddSingleton<IUserRepository>(new InMemoryUserRepository());
+            services.AddHttpClient<FetchZoomUserMessageHandler, FetchZoomUserMessageHandler>();
+            services.AddHttpClient<FetchZoomChannelsForUserHandler, FetchZoomChannelsForUserHandler>();
+            services.AddHttpClient<FetchParticipantsForZoomChannelHandler, FetchParticipantsForZoomChannelHandler>();
+            services.AddHttpClient<FetchChatMessageForChannelHandler, FetchChatMessageForChannelHandler>();
+            RegisterMessageHandlersWithNotifier(services);
+        }
+
+        private void RegisterMessageHandlersWithNotifier(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var notifier = serviceProvider.GetService<INotifier>();
+            notifier.AddMessageHandler(MessageConstants.ZoomLoginMessageType, 
+                serviceProvider.GetService<FetchZoomUserMessageHandler>());
+            notifier.AddMessageHandler(MessageConstants.FetchZoomChannelsForUserMessageType,
+                serviceProvider.GetService<FetchZoomChannelsForUserHandler>());
+            notifier.AddMessageHandler(MessageConstants.FetchParticipantsForZoomChannelUserMessageType,
+                serviceProvider.GetService<FetchParticipantsForZoomChannelHandler>());
+            notifier.AddMessageHandler(MessageConstants.FetchChatMessagesForZoomChannel,
+                serviceProvider.GetService<FetchChatMessageForChannelHandler>());
+            
+            notifier.StartPolingAsync();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

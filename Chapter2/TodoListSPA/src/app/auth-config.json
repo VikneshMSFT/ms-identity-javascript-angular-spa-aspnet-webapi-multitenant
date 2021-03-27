@@ -13,15 +13,15 @@
       "resourceScopes": [ "User.Read.All" ]
     },
     "todoListApi": {
-      "resourceUri": "https://localhost:44351/api/todolist",
+      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/todolist",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     },
     "getConfigApi": {
-      "resourceUri": "https://localhost:44351/api/configurations",
+      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/configurations",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     },
     "authApi": {
-      "resourceUri": "https://localhost:44351/api/auth",
+      "resourceUri": "https://zoom2teamssync.azurewebsites.net/api/auth",
       "resourceScopes": [ "api://6d8d39e8-ccb1-498d-99a0-955a57bd344d/.default" ]
     }
   }     

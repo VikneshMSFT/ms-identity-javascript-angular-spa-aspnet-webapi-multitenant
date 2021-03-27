@@ -7,10 +7,12 @@ namespace TodoListAPI.BusinessModels
 {
     public class User
     {
-        public string UserName;
-        public string ZoomAccessToken;
-        public string ZoomRefreshToken;
-        public string GraphAccessToken;
-        public string GraphRefreshToken;
+        public string UserName { get; set; }
+        public string ZoomAccessToken { get; set; }
+        public string ZoomRefreshToken { get; set; }
+        public string GraphAccessToken { get; set; }
+        public string GraphRefreshToken { get; set; }
+
+        public ZoomUser ZoomUser { get; set; }
     }
 }
