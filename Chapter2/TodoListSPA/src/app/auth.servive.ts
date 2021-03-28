@@ -17,6 +17,7 @@ import { environment } from "src/environments/environment";
     postAuthCode(authCode: AuthCode)
     {
       console.log("calling zoom auth servive");
+      console.log(this.apiUri);
       return this.http.post<AuthCode>(this.apiUri, authCode)
     }
 
