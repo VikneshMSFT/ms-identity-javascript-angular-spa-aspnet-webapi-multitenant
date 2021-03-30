@@ -52,7 +52,7 @@ namespace TodoListAPI.BackGroundWorker
                     var handlers = messageHandlers[message.MessageType];
                     foreach (IMessageHandler handler in handlers)
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(500);
                         CurrentMessagesHandled++;
                         ThreadPool.QueueUserWorkItem(new WaitCallback((obj) => handler.HandleMessageAsync(message)));                        
                     }

@@ -60,7 +60,7 @@ namespace TodoListAPI.Controllers
                                 ZoomChannelId = channel.Id
                             }
                         );
-                    Thread.Sleep(3000);
+                    Thread.Sleep(300);
                     }
                 });           
             return "Success";

@@ -74,7 +74,7 @@ namespace TodoListAPI.BackGroundWorker.MessageHandler
                     {
                         break;
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(200);
                 }
             }
             catch (Exception ex)
