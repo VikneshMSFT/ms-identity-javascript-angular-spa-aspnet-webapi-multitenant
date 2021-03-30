@@ -14,6 +14,8 @@ export class ConsentComponent {
   constructor(private authService : AuthService) { }
 
   adminConsent() {   
-    this.authService.postImportToTeams();         
+    this.authService.postImportToTeams().subscribe((resp) => {
+      console.log("got response " + resp);
+    });         
   }
 }

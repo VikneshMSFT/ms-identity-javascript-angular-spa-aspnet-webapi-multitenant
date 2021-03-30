@@ -228,7 +228,7 @@ namespace TodoListAPI.BackGroundWorker.MessageHandler
             catch(Exception)
             {
                 message.RetryCount++;
-                //this._notifier.Notify(message);
+                this._notifier.Notify(message);
             }            
             return true;
         }

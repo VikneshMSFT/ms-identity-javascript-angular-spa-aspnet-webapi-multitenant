@@ -25,7 +25,7 @@ import { environment } from "src/environments/environment";
     {
       console.log("calling zoom auth servive");
       console.log(this.apiUri);
-      return this.http.get(this.apiUri + "/TriggerTeamsImport");
+      return this.http.get<string>(this.apiUri + "/TriggerTeamsImport");
     }
 
   }
