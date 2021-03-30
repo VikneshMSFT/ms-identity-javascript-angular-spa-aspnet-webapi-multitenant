@@ -10,5 +10,7 @@ namespace TodoListAPI.BackGroundWorker.Message
         public string ZoomChannelId { get; set; }
 
         public string ZoomUserId { get; set; }
+
+        public int DateToFetch { get; set; }
     }
 }

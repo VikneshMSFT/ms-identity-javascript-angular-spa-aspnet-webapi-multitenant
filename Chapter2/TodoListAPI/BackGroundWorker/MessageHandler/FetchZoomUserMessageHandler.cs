@@ -66,6 +66,14 @@ namespace TodoListAPI.BackGroundWorker.MessageHandler
                     MessageType = MessageConstants.FetchZoomChannelsForUserMessageType,
                     O365UserUPN = userMessage.O365UserUPN,
                 });
+
+                //todo remove below
+
+               /* _notifier.Notify(new UserMessage
+                {
+                    MessageType = MessageConstants.ImportChatMessagesForZoomChannelIntoTeams,
+                    O365UserUPN = userMessage.O365UserUPN,
+                });*/
             } 
             catch(Exception ex)
             {

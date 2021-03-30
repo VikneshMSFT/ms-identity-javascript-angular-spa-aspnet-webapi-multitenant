@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TodoListAPI.BusinessModels;
 
 namespace TodoListAPI.Repository
@@ -18,5 +19,18 @@ namespace TodoListAPI.Repository
         Task<bool> AddMemberToZoomChannel(string channelId, ZoomUser user);
 
         Task<bool> AddChatMessageToZoomChannel(string channelId, ChannelMessage message);
+
+        Task<List<ChannelMessage>> GetChannelMessagesForChannelId(string zoomChannelId);
+
+        Task<ZoomChannel> GetChannel(string zoomChannelId);
+
+        Task<List<User>> GetOwnerOfZoomChannel(string zoomChannelId);
+
+        Task<List<User>> GetMembersOfZoomChannel(string zoomChannelId);
+
+        Task<User> GetUserByZoomMailId(string zoomMailId);
+
+        Task<ICollection<ZoomChannel>> GetAllChannels();
+
     }
 }

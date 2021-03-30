@@ -11,7 +11,8 @@ namespace TodoListAPI.BusinessModels
       "message": "And you?",
       "sender": "myemail@someemailaddr.com",
       "date_time": "2019-09-17T20:25:21Z",
-      "timestamp": 1568751921626
+      "timestamp":  1568751921626
+                    1616991997975
      */
     public class ChannelMessage
     {

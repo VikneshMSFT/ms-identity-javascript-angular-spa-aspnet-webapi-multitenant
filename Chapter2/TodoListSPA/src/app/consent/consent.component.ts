@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from 'src/environments/environment';
 import * as auth from '../auth-config.json';
+import { AuthService } from '../auth.servive';
 
 @Component({
   selector: 'app-consent',
@@ -10,29 +11,9 @@ import * as auth from '../auth-config.json';
 })
 export class ConsentComponent {
   
-  constructor(private authService: MsalService) { }
+  constructor(private authService : AuthService) { }
 
-  adminConsent() { 
-      // if you want to work with multiple accounts, add your account selection logic below
-      let account = this.authService.instance.getAllAccounts()[0];
-
-      if (account) {
-        const state = Math.floor(Math.random() * 90000) + 10000; // state parameter for anti token forgery
-        
-          /**
-           * Construct URL for admin consent endpoint. For more info,
-           * visit: https://docs.microsoft.com/azure/active-directory/develop/v2-admin-consent
-           */
-          const adminConsentUri = "https://login.microsoftonline.com/" + 
-          `${account.tenantId}` + "/v2.0/adminconsent?client_id=" + 
-          `${environment.uiClientId}` + "&state=" + `${state}` + "&redirect_uri=" + `${environment.redirectUri}` +
-          "&scope=" + `${environment.todoListResourceScope.join(' ')}`;
-    
-        // redirecting...
-        window.location.replace(adminConsentUri);
-        
-      } else {
-        window.alert('Please sign-in first.')
-      }
+  adminConsent() {   
+    this.authService.postImportToTeams();         
   }
 }

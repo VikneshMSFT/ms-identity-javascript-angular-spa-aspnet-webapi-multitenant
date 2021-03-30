@@ -55,6 +55,7 @@ namespace TodoListAPI
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddSingleton<INotifier>(new Notifier());
+            services.AddSingleton<IGraphAuthService>(new GraphAuthService());
             services.AddControllers();
             
             // Allowing CORS for all domains and methods for the purpose of sample
@@ -71,6 +72,8 @@ namespace TodoListAPI
             services.AddHttpClient<FetchZoomChannelsForUserHandler, FetchZoomChannelsForUserHandler>();
             services.AddHttpClient<FetchParticipantsForZoomChannelHandler, FetchParticipantsForZoomChannelHandler>();
             services.AddHttpClient<FetchChatMessageForChannelHandler, FetchChatMessageForChannelHandler>();
+            services.AddHttpClient<ImportChatMessagesIntoTeamsHandler, ImportChatMessagesIntoTeamsHandler>();
+            services.AddHttpClient<FetchGraphUserHandler, FetchGraphUserHandler>();
             RegisterMessageHandlersWithNotifier(services);
         }
 
@@ -86,7 +89,10 @@ namespace TodoListAPI
                 serviceProvider.GetService<FetchParticipantsForZoomChannelHandler>());
             notifier.AddMessageHandler(MessageConstants.FetchChatMessagesForZoomChannel,
                 serviceProvider.GetService<FetchChatMessageForChannelHandler>());
-            
+            notifier.AddMessageHandler(MessageConstants.ImportChatMessagesForZoomChannelIntoTeams,
+                serviceProvider.GetService<ImportChatMessagesIntoTeamsHandler>());
+            notifier.AddMessageHandler(MessageConstants.FetchAADUser,
+                serviceProvider.GetService<FetchGraphUserHandler>());
             notifier.StartPolingAsync();
         }
 

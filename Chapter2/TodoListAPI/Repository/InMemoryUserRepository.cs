@@ -28,6 +28,15 @@ namespace TodoListAPI.Repository
             return Task.FromResult(true);
         }
 
+        public Task<List<ChannelMessage>> GetChannelMessagesForChannelId(string zoomChannelId)
+        {
+            if (channelIdToMessage.ContainsKey(zoomChannelId))
+            {
+                return Task.FromResult(channelIdToMessage[zoomChannelId]);
+            }
+            return Task.FromResult(new List<ChannelMessage>());            
+        }
+
         public Task<bool> AddMemberToZoomChannel(string channelId, ZoomUser user)
         {
             if("member".Equals(user.Role))
@@ -69,7 +78,7 @@ namespace TodoListAPI.Repository
         public Task<bool> AddZoomUser(string O365Upn, ZoomUser zoomUser)
         {
             userDictionary[O365Upn].ZoomUser = zoomUser;
-            ZoomIdUserDictionary[zoomUser.Id] = userDictionary[O365Upn];
+            ZoomIdUserDictionary[zoomUser.Id.ToLower()] = userDictionary[O365Upn];
             ZoomEmailUserDictionary[zoomUser.Email] = userDictionary[O365Upn];
             return Task.FromResult(true);
         }
@@ -84,12 +93,69 @@ namespace TodoListAPI.Repository
             return Task.FromResult(user);
         }
 
+        public Task<User> GetUserByZoomMailId(string zoomMailId)
+        {
+            User user = null;
+            if (ZoomEmailUserDictionary.ContainsKey(zoomMailId))
+            {
+                user = ZoomEmailUserDictionary[zoomMailId];
+            }
+            return Task.FromResult(user);
+        }
+
         public Task<bool> SaveUser(User user)
         {
             userDictionary.GetOrAdd(user.UserName, user);
             return Task.FromResult(true);
         }
 
+        public Task<ZoomChannel> GetChannel(string zoomChannelId)
+        {
+            return Task.FromResult(channelDictionary[zoomChannelId]);
+        }
 
+        public Task<List<User>> GetOwnerOfZoomChannel(string zoomChannelId)
+        {
+            List<User> userList = new List<User>();
+            if (channelIdToOwnerDictionary.ContainsKey(zoomChannelId))
+            {
+                var owners = channelIdToOwnerDictionary[zoomChannelId];
+                foreach (string zoomUserId in owners)
+                {
+                    Console.WriteLine("owner Id = " + zoomUserId);
+                    if (ZoomIdUserDictionary.ContainsKey(zoomUserId))
+                    {
+                        userList.Add(ZoomIdUserDictionary[zoomUserId]);
+                    }
+                }
+            }            
+            return Task.FromResult(userList);
+        }
+
+        public Task<List<User>> GetMembersOfZoomChannel(string zoomChannelId)
+        {
+            List<User> userList = new List<User>();
+            if (channelIdToMemberDictionary.ContainsKey(zoomChannelId))
+            {
+                var members = channelIdToMemberDictionary[zoomChannelId];
+                foreach (string zoomUserId in members)
+                {
+                    if (ZoomIdUserDictionary.ContainsKey(zoomUserId))
+                    {
+                        userList.Add(ZoomIdUserDictionary[zoomUserId]);
+                    }
+                }
+            }            
+            return Task.FromResult(userList);
+        }
+
+        public Task<ICollection<ZoomChannel>> GetAllChannels()
+        {
+            if (channelDictionary.Keys.Count > 0)
+            {
+                return Task.FromResult(channelDictionary.Values);
+            }
+            return null;            
+        }
     }
 }

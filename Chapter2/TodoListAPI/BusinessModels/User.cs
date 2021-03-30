@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TodoListAPI.BusinessModels.TeamsModels;
 
 namespace TodoListAPI.BusinessModels
 {
@@ -12,6 +13,8 @@ namespace TodoListAPI.BusinessModels
         public string ZoomRefreshToken { get; set; }
         public string GraphAccessToken { get; set; }
         public string GraphRefreshToken { get; set; }
+
+        public AADUser AadUser { get; set; }
 
         public ZoomUser ZoomUser { get; set; }
     }

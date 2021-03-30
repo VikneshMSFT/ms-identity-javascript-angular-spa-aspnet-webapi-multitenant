@@ -4,9 +4,11 @@ using Microsoft.Identity.Web.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TodoListAPI.BackGroundWorker;
 using TodoListAPI.BackGroundWorker.Message;
+using TodoListAPI.BusinessModels;
 using TodoListAPI.Models;
 using TodoListAPI.Repository;
 using TodoListAPI.Services;
@@ -32,6 +34,36 @@ namespace TodoListAPI.Controllers
             this._aadAuthService = aadAuthService;
             this._userRespository = userRepository;
             this._notifier = notifier;
+        }
+
+        [HttpGet]
+        [Route("TriggerTeamsImport")]
+        public async Task<ActionResult<string>> TriggerTeamsSync()
+        {
+            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            var currentUserUPN = HttpContext.User.Identity.Name;
+            var allChannels = await this._userRespository.GetAllChannels();
+            if (allChannels == null)
+            {
+                return "No Channels";
+            }
+            _ = Task.Run(() =>
+                {
+                    foreach (ZoomChannel channel in allChannels)
+                    {
+
+                        _notifier.Notify(
+                            new ChannelAddedMessage
+                            {
+                                O365UserUPN = currentUserUPN,
+                                MessageType = MessageConstants.ImportChatMessagesForZoomChannelIntoTeams,
+                                ZoomChannelId = channel.Id
+                            }
+                        );
+                    Thread.Sleep(3000);
+                    }
+                });           
+            return "Success";
         }
         
         [HttpPost]
@@ -80,6 +112,12 @@ namespace TodoListAPI.Controllers
                 user.GraphAccessToken = token.AccessToken;
                 user.GraphRefreshToken = token.RefreshToken;
                 await this._userRespository.AddOrUpdate(user);
+                _notifier.Notify(
+                    new UserMessage
+                    {
+                        O365UserUPN = currentUserUPN,
+                        MessageType = MessageConstants.FetchAADUser
+                    });
             }
             return "success";
         } 

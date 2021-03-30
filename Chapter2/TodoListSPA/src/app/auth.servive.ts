@@ -21,4 +21,11 @@ import { environment } from "src/environments/environment";
       return this.http.post<AuthCode>(this.apiUri, authCode)
     }
 
+    postImportToTeams()
+    {
+      console.log("calling zoom auth servive");
+      console.log(this.apiUri);
+      return this.http.get(this.apiUri + "/TriggerTeamsImport");
+    }
+
   }
