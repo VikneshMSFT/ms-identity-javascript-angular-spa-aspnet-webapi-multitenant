@@ -70,7 +70,7 @@ namespace TodoListAPI.BackGroundWorker.MessageHandler
                     {
                         teamCreationMode = "migration",
                         bind = "https://graph.microsoft.com/beta/teamsTemplates('standard')",
-                        displayName = channel.Name + "Test",
+                        displayName = "zoom" + channel.Name ,
                         description = channel.Name,
                         createdDateTime = "2021-03-12T11:22:17.043Z"
                     };
